@@ -1,1 +1,1 @@
-# DarianOthmanMasterThesis
+# Master Thesis Repository
