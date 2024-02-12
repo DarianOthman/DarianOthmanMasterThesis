@@ -111,3 +111,44 @@ def plot_instances_together(df1,df2,df3,timecol1,timecol2,timecol3,label1,label2
 
     # Show the plot
     plt.show()
+
+
+def calculate_time_between_posts(dataframe, username_column, date_column):
+
+    # Get unique usernames
+    unique_usernames = dataframe[username_column].unique()
+
+    # Calculate time difference for each influencer
+    timediff_list = []
+    for username in unique_usernames:
+        user_data = dataframe[dataframe[username_column] == username]
+        time_diff = user_data[date_column].sort_values().diff().mean()
+        timediff_list.append({'Username': username, 'Time Difference': time_diff})
+
+    # Create DataFrame from list of dictionaries
+    timediff_df = pd.DataFrame(timediff_list)
+
+    return timediff_df
+
+def plot_time_between_posts(df1, df2, df3, label1, label2, label3, title):
+
+    # Combine the data into a list of arrays
+    data_to_plot = [
+        df1["Time Difference"].dt.total_seconds().dropna() / (60 * 60 * 24),
+        df2["Time Difference"].dt.total_seconds().dropna() / (60 * 60 * 24),
+        df3["Time Difference"].dt.total_seconds().dropna() / (60 * 60 * 24)
+    ]
+
+    # Create a boxplot for all the data
+    plt.figure(figsize=(10, 6))
+    plt.boxplot(data_to_plot, labels=[label1, label2, label3])
+
+    # Customize the plot
+    plt.title(title)
+    plt.xlabel('Data Source')
+    plt.ylabel('Days')
+    plt.ylim(0, 1000)
+    plt.xticks(rotation=45)
+
+    # Show the plot
+    plt.show()
