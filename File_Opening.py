@@ -83,3 +83,31 @@ def plot_instances_by_week(dataframe, date_column, title='Evolution of Instances
 
     # Show the plot
     plt.show()
+    
+def plot_instances_together(df1,df2,df3,timecol1,timecol2,timecol3,label1,label2,label3,title):
+    # Convert to datetime format for each DataFrame
+    df1[timecol1] = pd.to_datetime(df1[timecol1])
+    df2[timecol2] = pd.to_datetime(df2[timecol2])
+    df3[timecol3] = pd.to_datetime(df3[timecol3])
+
+    # Group by the week and count instances for each week for each DataFrame
+    count_by_week1 = df1.resample('W-Mon', on=timecol1).size().reset_index(name='count1')
+    count_by_week2 = df2.resample('W-Mon', on=timecol2).size().reset_index(name='count2')
+    count_by_week3 = df3.resample('W-Mon', on=timecol3).size().reset_index(name='count3')
+
+    # Plot each DataFrame separately
+    plt.plot(count_by_week1[timecol1], count_by_week1['count1'], label=label1, linestyle='-', linewidth=1)
+    plt.plot(count_by_week2[timecol2], count_by_week2['count2'], label=label2, linestyle='-', linewidth=1)
+    plt.plot(count_by_week3[timecol3], count_by_week3['count3'], label=label3, linestyle='-', linewidth=1)
+
+    # Customize the plot if needed
+    plt.title(title)
+    plt.xlabel('Date')
+    plt.ylabel('Number of Instances')
+    plt.xticks(rotation=45)
+
+    # Add legend
+    plt.legend()
+
+    # Show the plot
+    plt.show()
