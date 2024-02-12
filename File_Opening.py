@@ -16,9 +16,6 @@ def read_data(file_path):
     df_ins = df_ins[1:]
     df_ins.columns = new_header
 
-    # Filtering rows with non-empty 'relative_position_1st_disclosure' column
-    df_ins = df_ins[df_ins["relative_position_1st_disclosure"] != ""]
-
     return df_ins
 
 
@@ -30,3 +27,13 @@ def get_unique_values(dataframe, column_name):
     unique_values = set(dataframe[column_name].unique())
 
     return unique_values
+
+
+def merge_and_drop_rows(df1, df2, on_column):
+    # Merge the two DataFrames on the specified column
+    merged_df = pd.merge(df1, df2, on=on_column, how='left', indicator=True)
+
+    # Drop rows where the ID is present in df1
+    result_df = merged_df[merged_df['_merge'] == 'left_only'].drop('_merge', axis=1)
+
+    return result_df
