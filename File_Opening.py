@@ -2,6 +2,8 @@ import pandas as pd
 import csv
 from matplotlib import pyplot as plt
 from matplotlib_venn import venn3
+import ast
+import networkx as nx
 def read_data(file_path):
     # Read in Instagram data
     with open(file_path, 'r', encoding='utf-8') as f:
@@ -151,4 +153,29 @@ def plot_time_between_posts(df1, df2, df3, label1, label2, label3, title):
     plt.xticks(rotation=45)
 
     # Show the plot
+    plt.show()
+
+
+def draw_hashtag_network(dataframe, hashtags_column, title, k_value=0.2, node_size=2, edge_color='grey', width=0.1, alpha=0.7):
+
+
+    # Convert the column containing lists of hashtags to lists
+    dataframe[hashtags_column] = dataframe[hashtags_column].apply(lambda x: ast.literal_eval(x) if x else "")
+
+    # Filter out rows with non-empty lists of hashtags
+    filtered_df = dataframe[dataframe[hashtags_column].apply(lambda x: bool(x))].reset_index(drop=True)
+
+    # Create a graph
+    G = nx.Graph()
+
+    # Add edges to the graph
+    for words_list in filtered_df[hashtags_column]:
+        G.add_edges_from([(word1, word2) for i, word1 in enumerate(words_list) for j, word2 in enumerate(words_list) if i < j])
+
+    # Calculate the spring layout
+    pos = nx.spring_layout(G, k=k_value)
+
+    # Draw the graph with specified layout
+    nx.draw(G, pos, with_labels=False, node_size=node_size, edge_color=edge_color, width=width, alpha=alpha)
+    plt.title(title)
     plt.show()
