@@ -134,3 +134,52 @@ ggplot(combined_data, aes(x = avg_caption_length_per_user, fill = dataset)) +
   theme_minimal()
 
 ```
+```{r}
+combined_data
+```
+
+
+```{r}
+summary(lm(avg_hashtag_per_post~platform,combined_data))
+summary(lm(avg_caption_length_per_user~platform,combined_data))
+summary(lm(avg_tag_per_post~platform,combined_data))
+summary(lm(post_count~platform,combined_data))
+```
+
+
+
+```{r}
+ggplot(combined_data, aes(x = avg_hashtag_per_post, fill = platform)) +
+  geom_histogram(binwidth = 20, color = "black", alpha = 0.7, position = "identity") +
+  labs(
+    x = "Average Hashtags per Post",
+    y = "Count",
+    title = "Histogram of Average Hashtags per Post"
+  ) +
+  facet_wrap(~ platform, scales = "free") +
+  theme_minimal()
+```
+
+```{r}
+ggplot(combined_data, aes(x = avg_caption_length_per_user, fill = platform)) +
+  geom_histogram(binwidth = 200, color = "black", alpha = 0.7, position = "identity") +
+  labs(
+    x = "Average Hashtags per Post",
+    y = "Count",
+    title = "Histogram of Average Hashtags per Post"
+  ) +
+  facet_wrap(~ platform, scales = "free") +
+  theme_minimal()
+```
+
+```{r}
+ggplot(combined_data, aes(x = avg_tag_per_post, fill = platform)) +
+  geom_histogram(binwidth = 3, color = "black", alpha = 0.7, position = "identity") +
+  labs(
+    x = "Average Hashtags per Post",
+    y = "Count",
+    title = "Histogram of Average Hashtags per Post"
+  ) +
+  facet_wrap(~ platform, scales = "free") +
+  theme_minimal()
+```
