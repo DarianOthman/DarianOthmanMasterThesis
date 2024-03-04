@@ -1,0 +1,136 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(readr)
+library(ggplot2)
+```
+
+```{r}
+wd<-c("C:/Users/I6240624/Documents/BISS/Master Thesis/Code/DarianOthmanMasterThesis/Notebooks")
+setwd(wd)
+```
+
+
+```{r}
+# Load English Instagram DataFrame
+infcharins_en <- read.csv("C:/Users/I6240624/Documents/BISS/Master Thesis/Code/DarianOthmanMasterThesis/Notebooks/infcharins_en.csv")
+
+# Load Dutch Instagram DataFrame
+infcharins_nl <- read.csv("C:/Users/I6240624/Documents/BISS/Master Thesis/Code/DarianOthmanMasterThesis/Notebooks/infcharins_nl.csv")
+
+# Load English TikTok DataFrame
+infchartt_en <- read.csv("C:/Users/I6240624/Documents/BISS/Master Thesis/Code/DarianOthmanMasterThesis/Notebooks/infchartt_en.csv")
+
+# Load Dutch TikTok DataFrame
+infchartt_nl <- read.csv("C:/Users/I6240624/Documents/BISS/Master Thesis/Code/DarianOthmanMasterThesis/Notebooks/infchartt_nl.csv")
+
+# Load English YouTube DataFrame
+infcharyt_en <- read.csv("C:/Users/I6240624/Documents/BISS/Master Thesis/Code/DarianOthmanMasterThesis/Notebooks/infcharyt_en.csv")
+
+# Load Dutch YouTube DataFrame
+infcharyt_nl <- read.csv("C:/Users/I6240624/Documents/BISS/Master Thesis/Code/DarianOthmanMasterThesis/Notebooks/infcharyt_nl.csv")
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+# Combine all datasets for Instagram, YouTube, and TikTok
+combined_data <- bind_rows(
+  # Instagram
+  bind_rows(
+    infcharins_en %>% mutate(dataset = "Instagram EN"),
+    infcharins_nl %>% mutate(dataset = "Instagram NL")
+  ) %>%
+    mutate(platform = "Instagram"),
+  
+  # YouTube
+  bind_rows(
+    infcharyt_en %>% mutate(dataset = "YouTube EN"),
+    infcharyt_nl %>% mutate(dataset = "YouTube NL")
+  ) %>%
+    mutate(platform = "YouTube"),
+  
+  # TikTok
+  bind_rows(
+    infchartt_en %>% mutate(dataset = "TikTok EN"),
+    infchartt_nl %>% mutate(dataset = "TikTok NL")
+  ) %>%
+    mutate(platform = "TikTok")
+)
+
+# Set the order of factor levels for the facet
+combined_data$platform <- factor(
+  combined_data$platform,
+  levels = c("Instagram", "YouTube", "TikTok")
+)
+
+# Create the faceted histogram
+ggplot(combined_data, aes(x = avg_hashtag_per_post, fill = dataset)) +
+  geom_histogram(binwidth = 20, color = "black", alpha = 0.7, position = "identity") +
+  labs(
+    x = "Average Hashtags per Post",
+    y = "Count",
+    title = "Histogram of Average Hashtags per Post"
+  ) +
+  scale_fill_manual(values = c(
+    "Instagram EN"= "lightblue","YouTube EN"= "lightblue","TikTok EN" = "lightblue","Instagram NL"= "orange","YouTube NL"= "orange","TikTok NL" = "orange"
+  )) +
+  facet_wrap(~ platform, scales = "free") +
+  theme_minimal()
+
+```
+```{r}
+# Create the faceted histogram
+ggplot(combined_data, aes(x = post_count, fill = dataset)) +
+  geom_histogram(binwidth = 200, color = "black", alpha = 0.7, position = "identity") +
+  labs(
+    x = "Average Hashtags per Post",
+    y = "Count",
+    title = "Histogram of Average Hashtags per Post"
+  ) +
+  scale_fill_manual(values = c(
+    "Instagram EN"= "lightblue","YouTube EN"= "lightblue","TikTok EN" = "lightblue","Instagram NL"= "orange","YouTube NL"= "orange","TikTok NL" = "orange"
+  )) +
+  facet_wrap(~ platform, scales = "free") +
+  theme_minimal()
+
+```
+
+```{r}
+# Create the faceted histogram
+ggplot(combined_data, aes(x = avg_tag_per_post, fill = dataset)) +
+  geom_histogram(binwidth = 3, color = "black", alpha = 0.7, position = "identity") +
+  labs(
+    x = "Average Hashtags per Post",
+    y = "Count",
+    title = "Histogram of Average Hashtags per Post"
+  ) +
+  scale_fill_manual(values = c(
+    "Instagram EN"= "lightblue","YouTube EN"= "lightblue","TikTok EN" = "lightblue","Instagram NL"= "orange","YouTube NL"= "orange","TikTok NL" = "orange"
+  )) +
+  facet_wrap(~ platform, scales = "free") +
+  theme_minimal()
+
+```
+
+```{r}
+# Create the faceted histogram
+ggplot(combined_data, aes(x = avg_caption_length_per_user, fill = dataset)) +
+  geom_histogram(binwidth = 200, color = "black", alpha = 0.7, position = "identity") +
+  labs(
+    x = "Average Hashtags per Post",
+    y = "Count",
+    title = "Histogram of Average Hashtags per Post"
+  ) +
+  scale_fill_manual(values = c(
+    "Instagram EN"= "lightblue","YouTube EN"= "lightblue","TikTok EN" = "lightblue","Instagram NL"= "orange","YouTube NL"= "orange","TikTok NL" = "orange"
+  )) +
+  facet_wrap(~ platform, scales = "free") +
+  theme_minimal()
+
+```

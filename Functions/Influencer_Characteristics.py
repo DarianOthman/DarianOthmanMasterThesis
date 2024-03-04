@@ -210,7 +210,7 @@ def calculate_avg_hashtag_per_post(df, inf_df, username_col, hashtag_col):
 
 def calculate_sd_hashtag_per_post(df, inf_df, username_col, hashtag_col):
     sd_hashtag_per_post_per_user = df.groupby(username_col)[hashtag_col].apply(lambda x: x.apply(len).std())
-    inf_df["avg_hashtag_per_post"] = inf_df["username"].map(sd_hashtag_per_post_per_user)
+    inf_df["sd_hashtag_per_post"] = inf_df["username"].map(sd_hashtag_per_post_per_user)
 
 
 def calculate_avg_tag_per_post(df, inf_df, username_col, tag_col):
@@ -231,3 +231,17 @@ def calculate_avg_caption_length_per_user(df, inf_df, username_col, caption_col)
 def calculate_sd_caption_length_per_user(df, inf_df, username_col, caption_col):
     sd_caption_length_per_user = df.groupby(username_col)[caption_col].apply(lambda x: x.str.len().std())
     inf_df["sd_caption_length_per_user"] = inf_df["username"].map(sd_caption_length_per_user)
+
+
+def get_unique_hashtags(dataframe, column_name):
+    # Get list of hashtags from the specified column
+    listhashtag = list(dataframe[column_name][dataframe[column_name] != ''])
+
+    # Split each element on commas and remove extra spaces
+    listhashtag = [tag.strip() for hashtag in listhashtag for tag in hashtag.split(',')]
+
+    # Convert to set to get unique values
+    unique_hashtags = set(listhashtag)
+
+    return unique_hashtags
+
