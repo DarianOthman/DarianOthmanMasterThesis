@@ -102,7 +102,7 @@ def calculate_time_between_posts(dataframe, username_column, date_column):
     return timediff_df
 
 
-def plot_time_between_posts(df1, df2, df3, label1, label2, label3, title):
+def plot_time_between_posts(df1, df2, df3, label1, label2, label3, title,lower_limit=0, upper_limit=1000):
     # Combine the data into a list of arrays
     data_to_plot = [
         df1["Time Difference"].dt.total_seconds().dropna() / (60 * 60 * 24),
@@ -118,7 +118,7 @@ def plot_time_between_posts(df1, df2, df3, label1, label2, label3, title):
     plt.title(title)
     plt.xlabel('Data Source')
     plt.ylabel('Days')
-    plt.ylim(0, 1000)
+    plt.ylim(lower_limit, upper_limit)
     plt.xticks(rotation=45)
 
     # Show the plot
