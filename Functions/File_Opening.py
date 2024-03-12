@@ -19,6 +19,15 @@ def read_data(file_path):
     return df_ins
 
 
+def read_data_ai(file_path):
+    # Read in Instagram data
+    with open(file_path, 'r', encoding='utf-8') as f:
+        reader = csv.reader(f, delimiter=',')
+        rows = list(reader)
+        df = pd.DataFrame(rows)
+
+    return df
+
 def get_unique_values(dataframe, column_name):
     # Convert values in the specified column to uppercase and remove spaces
     dataframe[column_name] = dataframe[column_name].apply(lambda x: x.replace(" ", "").upper())

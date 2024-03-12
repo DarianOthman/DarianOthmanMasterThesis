@@ -1,6 +1,7 @@
 # Description: This file contains the functions to calculate the influencer characteristics
 from matplotlib import pyplot as plt
 from matplotlib_venn import venn3
+from matplotlib_venn import venn2
 import ast
 import networkx as nx
 import pandas as pd
@@ -33,7 +34,68 @@ def find_common_elements_and_plot(set_1, set_2, set_3, name_1, name_2, name_3, t
     venn3([set_1, set_2, set_3], (name_1, name_2, name_3))
     plt.title(title)
     plt.show()
+    return all_common_elements
 
+def get_common_elements(set_1_en, set_2_en, set_3_en):
+    common_in_1_and_2_en = set_1_en.intersection(set_2_en)
+    common_in_1_and_3_en = set_1_en.intersection(set_3_en)
+    common_in_2_and_3_en = set_2_en.intersection(set_3_en)
+
+    # Merge all common elements for English
+    common_usernames = set1_en.intersection(set2_en, set3_en)
+
+    return common_usernames
+def get_common_elements_all_languages(set_1_en, set_2_en, set_3_en, set_1_nl, set_2_nl, set_3_nl):
+    common_in_1_and_2_en = set_1_en.intersection(set_2_en)
+    common_in_1_and_3_en = set_1_en.intersection(set_3_en)
+    common_in_2_and_3_en = set_2_en.intersection(set_3_en)
+
+    # Merge all common elements for English
+    all_common_elements1_en = common_in_1_and_2_en.union(common_in_1_and_3_en, common_in_2_and_3_en)
+
+    common_in_1_and_2_nl = set_1_nl.intersection(set_2_nl)
+    common_in_1_and_3_nl = set_1_nl.intersection(set_3_nl)
+    common_in_2_and_3_nl = set_2_nl.intersection(set_3_nl)
+
+    # Merge all common elements for Dutch
+    all_common_elements2_nl = common_in_1_and_2_nl.union(common_in_1_and_3_nl, common_in_2_and_3_nl)
+
+    # Get common elements across both English and Dutch
+    common_elements_both_languages = all_common_elements1_en.intersection(all_common_elements2_nl)
+
+    return common_elements_both_languages
+
+def plot_common_in_languages(set_1_en, set_2_en, set_3_en, set_1_nl, set_2_nl, set_3_nl):
+    common_in_1_and_2_en = set_1_en.intersection(set_2_en)
+    common_in_1_and_3_en = set_1_en.intersection(set_3_en)
+    common_in_2_and_3_en = set_2_en.intersection(set_3_en)
+
+    # Merge all common elements for English
+    all_common_elements1_en = common_in_1_and_2_en.union(common_in_1_and_3_en, common_in_2_and_3_en)
+
+    common_in_1_and_2_nl = set_1_nl.intersection(set_2_nl)
+    common_in_1_and_3_nl = set_1_nl.intersection(set_3_nl)
+    common_in_2_and_3_nl = set_2_nl.intersection(set_3_nl)
+
+    # Merge all common elements for Dutch
+    all_common_elements2_nl = common_in_1_and_2_nl.union(common_in_1_and_3_nl, common_in_2_and_3_nl)
+
+    # Plot Venn diagram
+    venn2([all_common_elements1_en, all_common_elements2_nl], ('English', 'Dutch'))
+    plt.title("Common Influencers in English and Dutch")
+    plt.show()
+def filter_rows_by_count(df, column_name, min_count):
+
+    # Get the counts of each value in the specified column
+    value_counts = df[column_name].value_counts()
+
+    # Create a mask for values that appear at least the specified minimum count
+    mask = value_counts[df[column_name]].values >= min_count
+
+    # Filter the DataFrame
+    result = df.loc[mask]
+
+    return result
 
 def plot_instances_by_week(dataframe, date_column, title='Evolution of Instances by Week', x_label='Date',
                            y_label='Number of Instances', rotation=45):
@@ -245,3 +307,28 @@ def get_unique_hashtags(dataframe, column_name):
 
     return unique_hashtags
 
+def extract_mentions(parts):
+    at_mentions = [word for word in str(parts).split() if str(word).startswith('@')]
+    return ' '.join(at_mentions)
+
+# Function to extract URLs starting with 'http'
+def extract_urls(raw_text):
+    url = [word for word in raw_text.split() if str(word).startswith('http')]
+    return ' '.join(url)
+
+# Function to extract hashtags starting with '#'
+def extract_hashtags(raw_text):
+    hashTags = [word for word in raw_text.split() if str(word).startswith('#')]
+    return ' '.join(hashTags)
+
+# Function to extract emojis
+def extract_emojis(raw_text):
+    spaced_sentence = ' '.join(raw_text)
+    emojis = [word for word in spaced_sentence.split() if emoji.is_emoji(word)]
+    emojis = list(set(emojis))
+    return ' '.join(emojis)
+
+def split_columns(df, columns):
+    for col in columns:
+        df[col] = df[col].apply(lambda x: x.split() if isinstance(x, str) else x)
+    return df
