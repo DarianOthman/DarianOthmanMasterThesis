@@ -5,6 +5,7 @@ from matplotlib_venn import venn2
 import ast
 import networkx as nx
 import pandas as pd
+import emoji
 
 
 def find_common_elements_and_plot(set_1, set_2, set_3, name_1, name_2, name_3, title):
