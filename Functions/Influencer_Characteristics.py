@@ -1,11 +1,11 @@
 # Description: This file contains the functions to calculate the influencer characteristics
-from matplotlib import pyplot as plt
 from matplotlib_venn import venn3
 from matplotlib_venn import venn2
-import ast
-import networkx as nx
-import pandas as pd
 import emoji
+import pandas as pd
+import networkx as nx
+import matplotlib.pyplot as plt
+from collections import Counter
 
 
 def find_common_elements_and_plot(set_1, set_2, set_3, name_1, name_2, name_3, title):
@@ -37,15 +37,14 @@ def find_common_elements_and_plot(set_1, set_2, set_3, name_1, name_2, name_3, t
     plt.show()
     return all_common_elements
 
-def get_common_elements(set_1_en, set_2_en, set_3_en):
-    common_in_1_and_2_en = set_1_en.intersection(set_2_en)
-    common_in_1_and_3_en = set_1_en.intersection(set_3_en)
-    common_in_2_and_3_en = set_2_en.intersection(set_3_en)
 
+def get_common_elements(set_1_en, set_2_en, set_3_en):
     # Merge all common elements for English
-    common_usernames = set1_en.intersection(set2_en, set3_en)
+    common_usernames = set_1_en.intersection(set_2_en, set_3_en)
 
     return common_usernames
+
+
 def get_common_elements_all_languages(set_1_en, set_2_en, set_3_en, set_1_nl, set_2_nl, set_3_nl):
     common_in_1_and_2_en = set_1_en.intersection(set_2_en)
     common_in_1_and_3_en = set_1_en.intersection(set_3_en)
@@ -66,6 +65,7 @@ def get_common_elements_all_languages(set_1_en, set_2_en, set_3_en, set_1_nl, se
 
     return common_elements_both_languages
 
+
 def plot_common_in_languages(set_1_en, set_2_en, set_3_en, set_1_nl, set_2_nl, set_3_nl):
     common_in_1_and_2_en = set_1_en.intersection(set_2_en)
     common_in_1_and_3_en = set_1_en.intersection(set_3_en)
@@ -85,8 +85,9 @@ def plot_common_in_languages(set_1_en, set_2_en, set_3_en, set_1_nl, set_2_nl, s
     venn2([all_common_elements1_en, all_common_elements2_nl], ('English', 'Dutch'))
     plt.title("Common Influencers in English and Dutch")
     plt.show()
-def filter_rows_by_count(df, column_name, min_count):
 
+
+def filter_rows_by_count(df, column_name, min_count):
     # Get the counts of each value in the specified column
     value_counts = df[column_name].value_counts()
 
@@ -97,6 +98,7 @@ def filter_rows_by_count(df, column_name, min_count):
     result = df.loc[mask]
 
     return result
+
 
 def plot_instances_by_week(dataframe, date_column, title='Evolution of Instances by Week', x_label='Date',
                            y_label='Number of Instances', rotation=45):
@@ -165,7 +167,7 @@ def calculate_time_between_posts(dataframe, username_column, date_column):
     return timediff_df
 
 
-def plot_time_between_posts(df1, df2, df3, label1, label2, label3, title,lower_limit=0, upper_limit=1000):
+def plot_time_between_posts(df1, df2, df3, label1, label2, label3, title, lower_limit=0, upper_limit=1000):
     # Combine the data into a list of arrays
     data_to_plot = [
         df1["Time Difference"].dt.total_seconds().dropna() / (60 * 60 * 24),
@@ -188,12 +190,6 @@ def plot_time_between_posts(df1, df2, df3, label1, label2, label3, title,lower_l
     plt.show()
 
 
-import pandas as pd
-import networkx as nx
-import matplotlib.pyplot as plt
-from collections import Counter
-
-
 def draw_hashtag_network(dataframe, hashtags_column, title, sample_size=None, k_value=0.2, node_size=2,
                          edge_color='grey', alpha=0.7, edge_weight=0.1):
     dataframes = pd.DataFrame()
@@ -208,19 +204,19 @@ def draw_hashtag_network(dataframe, hashtags_column, title, sample_size=None, k_
     sample_size = sample_size
     random_sample = filtered_df.sample(n=sample_size, random_state=42)
 
-    G = nx.Graph()
+    g = nx.Graph()
     for words_list in random_sample[hashtags_column]:
         co_occurrences = Counter(
             [(word1, word2) for i, word1 in enumerate(words_list) for j, word2 in enumerate(words_list) if i < j])
         for edge, weight in co_occurrences.items():
-            G.add_edge(edge[0], edge[1], weight=weight)
+            g.add_edge(edge[0], edge[1], weight=weight)
 
     # Calculate the spring layout
-    pos = nx.spring_layout(G, k=k_value)
+    pos = nx.spring_layout(g, k=k_value)
 
     # Draw the graph with specified layout, considering edge weights
-    edge_weights = [G[u][v]['weight'] for u, v in G.edges()]
-    nx.draw(G, pos, with_labels=False, node_size=node_size, edge_color=edge_color,
+    edge_weights = [g[u][v]['weight'] for u, v in g.edges()]
+    nx.draw(g, pos, with_labels=False, node_size=node_size, edge_color=edge_color,
             width=[weight * edge_weight for weight in edge_weights], alpha=alpha)
 
     plt.title(title)
@@ -237,7 +233,7 @@ def draw_tag_network(dataframe, tags_column, title, sample_size=None, k_value=0.
     sample_size = sample_size
     random_sample = filtered_df.sample(n=sample_size, random_state=42)
 
-    G = nx.Graph()
+    g = nx.Graph()
     # Assuming tags_column is a DataFrame column containing lists of words in each row
     for i, row1 in random_sample.iterrows():
         for j, row2 in random_sample.iterrows():
@@ -247,14 +243,14 @@ def draw_tag_network(dataframe, tags_column, title, sample_size=None, k_value=0.
                 if common_words:
                     co_occurrences = Counter(common_words)
                     for word, weight in co_occurrences.items():
-                        G.add_edge(i, j, word=word, weight=weight)
+                        g.add_edge(i, j, word=word, weight=weight)
 
     k_value = k_value  # You can adjust this value to control the repulsion
-    pos = nx.spring_layout(G, k=k_value)
+    pos = nx.spring_layout(g, k=k_value)
 
     # Draw the graph with specified layout
-    edge_weights = [G[u][v]['weight'] for u, v in G.edges()]
-    nx.draw(G, pos, with_labels=False, node_size=node_size, edge_color=edge_color,
+    edge_weights = [g[u][v]['weight'] for u, v in g.edges()]
+    nx.draw(g, pos, with_labels=False, node_size=node_size, edge_color=edge_color,
             width=[weight * edge_weight for weight in edge_weights], alpha=alpha)
 
     plt.title(title)
@@ -296,31 +292,36 @@ def calculate_sd_caption_length_per_user(df, inf_df, username_col, caption_col):
     inf_df["sd_caption_length_per_user"] = inf_df["username"].map(sd_caption_length_per_user)
 
 
-def get_unique_hashtags(dataframe, column_name):
-    # Get list of hashtags from the specified column
-    listhashtag = list(dataframe[column_name][dataframe[column_name] != ''])
+def extract_unique_hashtags(dataframe, column_name):
+    list_hashtags = dataframe[column_name].tolist()
 
-    # Split each element on commas and remove extra spaces
-    listhashtag = [tag.strip() for hashtag in listhashtag for tag in hashtag.split(',')]
+    # Flatten list of lists
+    flat_list = [tag.strip() for sublist in list_hashtags for tag in str(sublist).split(',')]
+
+    # Remove empty strings
+    flat_list = [tag for tag in flat_list if tag]
 
     # Convert to set to get unique values
-    unique_hashtags = set(listhashtag)
-
+    unique_hashtags = set(flat_list)
     return unique_hashtags
+
 
 def extract_mentions(parts):
     at_mentions = [word for word in str(parts).split() if str(word).startswith('@')]
     return ' '.join(at_mentions)
+
 
 # Function to extract URLs starting with 'http'
 def extract_urls(raw_text):
     url = [word for word in raw_text.split() if str(word).startswith('http')]
     return ' '.join(url)
 
+
 # Function to extract hashtags starting with '#'
 def extract_hashtags(raw_text):
-    hashTags = [word for word in raw_text.split() if str(word).startswith('#')]
-    return ' '.join(hashTags)
+    hashtags = [word for word in raw_text.split() if str(word).startswith('#')]
+    return ' '.join(hashtags)
+
 
 # Function to extract emojis
 def extract_emojis(raw_text):
@@ -329,7 +330,45 @@ def extract_emojis(raw_text):
     emojis = list(set(emojis))
     return ' '.join(emojis)
 
+
 def split_columns(df, columns):
     for col in columns:
         df[col] = df[col].apply(lambda x: x.split() if isinstance(x, str) else x)
     return df
+
+
+def plot_unique(df1ai, df2ai, df3ai, df4ai, df5ai, df6ai, df1real, df2real, df3real, df4real, df5real, df6real,
+                column_name):
+    # Extracting data
+    unihasins_en_ai = len(extract_unique_hashtags(df1ai, column_name))
+    unihasins_nl_ai = len(extract_unique_hashtags(df2ai, column_name))
+    unihastt_en_ai = len(extract_unique_hashtags(df3ai, column_name))
+    unihastt_nl_ai = len(extract_unique_hashtags(df4ai, column_name))
+    unihasyt_en_ai = len(extract_unique_hashtags(df5ai, column_name))
+    unihasyt_nl_ai = len(extract_unique_hashtags(df6ai, column_name))
+
+    unihasins_en = len(extract_unique_hashtags(df1real, column_name))
+    unihasins_nl = len(extract_unique_hashtags(df2real, column_name))
+    unihastt_en = len(extract_unique_hashtags(df3real, column_name))
+    unihastt_nl = len(extract_unique_hashtags(df4real, column_name))
+    unihasyt_en = len(extract_unique_hashtags(df5real, column_name))
+    unihasyt_nl = len(extract_unique_hashtags(df6real, column_name))
+
+    platforms_ai = ['Instagram English', 'Instagram Dutch', 'TikTok English', 'TikTok Dutch', 'YouTube English',
+                    'YouTube Dutch']
+    unique_counts_ai = [unihasins_en_ai, unihasins_nl_ai, unihastt_en_ai, unihastt_nl_ai, unihasyt_en_ai,
+                        unihasyt_nl_ai]
+    unique_counts = [unihasins_en, unihasins_nl, unihastt_en, unihastt_nl, unihasyt_en, unihasyt_nl]
+
+    plt.figure(figsize=(10, 6))
+    p1 = plt.bar(platforms_ai, unique_counts_ai, color='skyblue', label='AI')
+    p2 = plt.bar(platforms_ai, unique_counts, color='orange', bottom=unique_counts_ai, label='Non-AI')
+
+    plt.xlabel('Platform')
+    plt.ylabel(f'Number of Unique {column_name.capitalize()}')
+    plt.title(f'Number of Unique {column_name.capitalize()} per Platform (AI vs. Non-AI)')
+    plt.xticks(rotation=45, ha='right')  # Rotate x-axis labels for better readability
+    plt.legend()
+    plt.tight_layout()
+
+    plt.show()
