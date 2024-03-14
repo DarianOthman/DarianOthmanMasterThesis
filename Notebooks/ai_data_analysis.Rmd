@@ -1,5 +1,6 @@
 ---
-title: "R Notebook"
+title: "AI Data Analysis"
+author: "Darian Othman"
 output: html_notebook
 ---
 
@@ -30,6 +31,11 @@ ttnl <- read.csv("C:/Users/I6240624/Documents/BISS/Master Thesis/Data/ttnlchar.c
 yten <- read.csv("C:/Users/I6240624/Documents/BISS/Master Thesis/Data/ytenchar.csv")
 ytnl <- read.csv("C:/Users/I6240624/Documents/BISS/Master Thesis/Data/ytnlchar.csv")
 ```
+
+```{r}
+dfinsen
+```
+
 
 ```{r}
 combined_data_real <- bind_rows(

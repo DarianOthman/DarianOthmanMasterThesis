@@ -190,17 +190,14 @@ def plot_time_between_posts(df1, df2, df3, label1, label2, label3, title, lower_
     plt.show()
 
 
-def draw_hashtag_network(dataframe, hashtags_column, title, sample_size=None, k_value=0.2, node_size=2,
+def draw_network(dataframe, hashtags_column, title, sample_size=None, k_value=0.2, node_size=2,
                          edge_color='grey', alpha=0.7, edge_weight=0.1):
-    dataframes = pd.DataFrame()
-    # Convert the column containing lists of hashtags to lists
-    dataframes[hashtags_column] = dataframe[hashtags_column].apply(
-        lambda x: [tag.strip() for tag in x.split(",")] if x else [])
+    dataframes = dataframe
 
     # Filter out rows with non-empty lists of hashtags
     filtered_df = dataframes[dataframes[hashtags_column].apply(lambda x: bool(x))].reset_index(drop=True)
     if sample_size is None:
-        sample_size = 1000 if len(filtered_df) > 1000 else len(filtered_df)
+        sample_size = len(filtered_df)
     sample_size = sample_size
     random_sample = filtered_df.sample(n=sample_size, random_state=42)
 
@@ -221,41 +218,6 @@ def draw_hashtag_network(dataframe, hashtags_column, title, sample_size=None, k_
 
     plt.title(title)
     plt.show()
-
-
-def draw_tag_network(dataframe, tags_column, title, sample_size=None, k_value=0.5, node_size=2,
-                     edge_color='grey', alpha=0.7, edge_weight=0.1):
-    dataframes = pd.DataFrame()
-    dataframes[tags_column] = dataframe[tags_column].apply(lambda x: [tag.strip() for tag in x.split(",")] if x else [])
-    filtered_df = dataframes[dataframes[tags_column].apply(lambda x: bool(x))].reset_index(drop=True)
-    if sample_size is None:
-        sample_size = 1000 if len(filtered_df) > 1000 else len(filtered_df)
-    sample_size = sample_size
-    random_sample = filtered_df.sample(n=sample_size, random_state=42)
-
-    g = nx.Graph()
-    # Assuming tags_column is a DataFrame column containing lists of words in each row
-    for i, row1 in random_sample.iterrows():
-        for j, row2 in random_sample.iterrows():
-            if i < j:
-                # Check if there is any common word between the two rows
-                common_words = set(row1[tags_column]) & set(row2[tags_column])
-                if common_words:
-                    co_occurrences = Counter(common_words)
-                    for word, weight in co_occurrences.items():
-                        g.add_edge(i, j, word=word, weight=weight)
-
-    k_value = k_value  # You can adjust this value to control the repulsion
-    pos = nx.spring_layout(g, k=k_value)
-
-    # Draw the graph with specified layout
-    edge_weights = [g[u][v]['weight'] for u, v in g.edges()]
-    nx.draw(g, pos, with_labels=False, node_size=node_size, edge_color=edge_color,
-            width=[weight * edge_weight for weight in edge_weights], alpha=alpha)
-
-    plt.title(title)
-    plt.show()
-
 
 def calculate_post_count(df, inf_df, username_col):
     post_count_per_user = df.groupby(username_col).size()
