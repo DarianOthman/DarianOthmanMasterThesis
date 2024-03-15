@@ -10,6 +10,11 @@ library(ggplot2)
 ```
 
 ```{r}
+2+3
+```
+
+
+```{r}
 wd<-c("C:/Users/I6240624/Documents/BISS/Master Thesis/Code/DarianOthmanMasterThesis/Notebooks")
 setwd(wd)
 ```
@@ -108,7 +113,7 @@ ggplot(combined_data, aes(x = avg_tag_per_post, fill = dataset)) +
   labs(
     x = "Average Hashtags per Post",
     y = "Count",
-    title = "Histogram of Average Hashtags per Post"
+    title = "Histogram of Average Tags per Post"
   ) +
   scale_fill_manual(values = c(
     "Instagram EN"= "lightblue","YouTube EN"= "lightblue","TikTok EN" = "lightblue","Instagram NL"= "orange","YouTube NL"= "orange","TikTok NL" = "orange"
@@ -125,7 +130,7 @@ ggplot(combined_data, aes(x = avg_caption_length_per_user, fill = dataset)) +
   labs(
     x = "Average Hashtags per Post",
     y = "Count",
-    title = "Histogram of Average Hashtags per Post"
+    title = "Histogram of Average Caption Length"
   ) +
   scale_fill_manual(values = c(
     "Instagram EN"= "lightblue","YouTube EN"= "lightblue","TikTok EN" = "lightblue","Instagram NL"= "orange","YouTube NL"= "orange","TikTok NL" = "orange"
@@ -183,3 +188,9 @@ ggplot(combined_data, aes(x = avg_tag_per_post, fill = platform)) +
   facet_wrap(~ platform, scales = "free") +
   theme_minimal()
 ```
+
+```{r}
+a=combined_data%>%filter(platform=="YouTube")
+summary(lm(avg_caption_length_per_user~dataset,a))
+```
+

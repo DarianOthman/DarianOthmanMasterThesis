@@ -299,28 +299,19 @@ def split_columns(df, columns):
     return df
 
 
-def plot_unique(df1ai, df2ai, df3ai, df4ai, df5ai, df6ai, df1real, df2real, df3real, df4real, df5real, df6real,
-                column_name):
+def plot_unique(df1ai, df2ai, df3ai, df1real, df2real, df3real,column_name):
     # Extracting data
     unihasins_en_ai = len(extract_unique_hashtags(df1ai, column_name))
     unihasins_nl_ai = len(extract_unique_hashtags(df2ai, column_name))
     unihastt_en_ai = len(extract_unique_hashtags(df3ai, column_name))
-    unihastt_nl_ai = len(extract_unique_hashtags(df4ai, column_name))
-    unihasyt_en_ai = len(extract_unique_hashtags(df5ai, column_name))
-    unihasyt_nl_ai = len(extract_unique_hashtags(df6ai, column_name))
 
     unihasins_en = len(extract_unique_hashtags(df1real, column_name))
     unihasins_nl = len(extract_unique_hashtags(df2real, column_name))
     unihastt_en = len(extract_unique_hashtags(df3real, column_name))
-    unihastt_nl = len(extract_unique_hashtags(df4real, column_name))
-    unihasyt_en = len(extract_unique_hashtags(df5real, column_name))
-    unihasyt_nl = len(extract_unique_hashtags(df6real, column_name))
 
-    platforms_ai = ['Instagram English', 'Instagram Dutch', 'TikTok English', 'TikTok Dutch', 'YouTube English',
-                    'YouTube Dutch']
-    unique_counts_ai = [unihasins_en_ai, unihasins_nl_ai, unihastt_en_ai, unihastt_nl_ai, unihasyt_en_ai,
-                        unihasyt_nl_ai]
-    unique_counts = [unihasins_en, unihasins_nl, unihastt_en, unihastt_nl, unihasyt_en, unihasyt_nl]
+    platforms_ai = ['Instagram English', 'Instagram Dutch', 'TikTok English']
+    unique_counts_ai = [unihasins_en_ai, unihasins_nl_ai, unihastt_en_ai]
+    unique_counts = [unihasins_en, unihasins_nl, unihastt_en]
 
     plt.figure(figsize=(10, 6))
     p1 = plt.bar(platforms_ai, unique_counts_ai, color='skyblue', label='AI')
