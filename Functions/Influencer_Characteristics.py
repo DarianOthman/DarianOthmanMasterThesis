@@ -395,3 +395,25 @@ def get_percentage_counts_total(df1, df2, df3, df4, df5, df6,df7, df8, df9, df10
 
     df_unique_counts = pd.DataFrame(unique_counts)
     return df_unique_counts
+
+
+# Function to extract unique hashtags and calculate average ratio
+def extract_hashtag_ratio(row, unique_hashtags):
+    row_hashtags = set(row)
+    ratio = len(row_hashtags) / len(unique_hashtags) * 100
+    return ratio
+
+
+def extract_unique_hashtags_ratio(dataframe, column_name):
+    list_hashtags = dataframe[column_name].tolist()
+    flat_list = [tag.strip() for sublist in list_hashtags for tag in str(sublist).split(',')]
+    flat_list = [tag for tag in flat_list if tag]
+    unique_hashtags = set(flat_list)
+
+    # Calculate ratio for each row
+    ratio_list = [extract_hashtag_ratio(row, unique_hashtags) for row in list_hashtags]
+
+    # Calculate the average ratio
+    average_ratio = sum(ratio_list) / len(ratio_list)
+
+    return average_ratio
