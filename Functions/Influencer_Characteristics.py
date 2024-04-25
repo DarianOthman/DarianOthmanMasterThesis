@@ -327,17 +327,14 @@ def plot_unique(df1ai, df2ai, df3ai, df1real, df2real, df3real,column_name):
     plt.show()
 
 
-def get_unique_counts(df1, df2, df3, df4, df5, df6, column_name):
+def get_unique_counts(df1, df2, df3, column_name):
     unihasins1 = extract_unique_hashtags(df1, column_name)
     unihasins2 = extract_unique_hashtags(df2, column_name)
     unihasins3 = extract_unique_hashtags(df3, column_name)
-    unihasins4 = extract_unique_hashtags(df4, column_name)
-    unihasins5 = extract_unique_hashtags(df5, column_name)
-    unihasins6 = extract_unique_hashtags(df6, column_name)
 
     unique_counts = {
-        'Platform': ['Facebook', 'Reddit', 'Twitter', 'Instagram', 'TikTok', 'YouTube'],
-        'Unique Counts': [len(unihasins1), len(unihasins2), len(unihasins3), len(unihasins4), len(unihasins5), len(unihasins6)]
+        'Platform': ['Instagram', 'TikTok', 'YouTube'],
+        'Unique Counts': [len(unihasins1), len(unihasins2), len(unihasins3)]
     }
 
     df_unique_counts = pd.DataFrame(unique_counts)
@@ -347,50 +344,42 @@ def calculate_avg_per_post(df, hashtag_col):
     avg_hashtag_per_post = df[hashtag_col].apply(len).sum() / len(df)
     return avg_hashtag_per_post
 
-def get_avg_counts(df1, df2, df3, df4, df5, df6, column_name):
+def get_avg_counts(df1, df2, df3,column_name):
     unihasins1 = calculate_avg_per_post(df1, column_name)
     unihasins2 = calculate_avg_per_post(df2, column_name)
     unihasins3 = calculate_avg_per_post(df3, column_name)
-    unihasins4 = calculate_avg_per_post(df4, column_name)
-    unihasins5 = calculate_avg_per_post(df5, column_name)
-    unihasins6 = calculate_avg_per_post(df6, column_name)
 
     unique_counts = {
-        'Platform': ['Facebook', 'Reddit', 'Twitter', 'Instagram', 'TikTok', 'YouTube'],
-        'Unique Counts': [unihasins1, unihasins2, unihasins3, unihasins4, unihasins5, unihasins6]
+        'Platform': ['Instagram', 'TikTok', 'YouTube'],
+        'Unique Counts': [unihasins1, unihasins2, unihasins3]
     }
 
     df_unique_counts = pd.DataFrame(unique_counts)
     return df_unique_counts
 
-def get_percentage_counts(df1, df2, df3, df4, df5, df6, column_name):
+def get_percentage_counts(df1, df2, df3, column_name):
     unihasins1 = df1[column_name].apply(len).sum() / len(df1)/len(extract_unique_hashtags(df1, column_name))
     unihasins2 = df2[column_name].apply(len).sum() / len(df2)/len(extract_unique_hashtags(df2, column_name))
     unihasins3 = df3[column_name].apply(len).sum() / len(df3)/len(extract_unique_hashtags(df3, column_name))
-    unihasins4 = df4[column_name].apply(len).sum() / len(df4)/len(extract_unique_hashtags(df4, column_name))
-    unihasins5 = df5[column_name].apply(len).sum() / len(df5)/len(extract_unique_hashtags(df5, column_name))
-    unihasins6 = df6[column_name].apply(len).sum() / len(df6)/len(extract_unique_hashtags(df6, column_name))
+
 
     unique_counts = {
-        'Platform': ['Facebook', 'Reddit', 'Twitter', 'Instagram', 'TikTok', 'YouTube'],
-        'Unique Counts': [(unihasins1), (unihasins2), (unihasins3), (unihasins4), (unihasins5), (unihasins6)]
+        'Platform': ['Instagram', 'TikTok', 'YouTube'],
+        'Unique Counts': [(unihasins1), (unihasins2), (unihasins3)]
     }
 
     df_unique_counts = pd.DataFrame(unique_counts)
     return df_unique_counts
 
 
-def get_percentage_counts_total(df1, df2, df3, df4, df5, df6,df7, df8, df9, df10, df11, df12, column_name):
+def get_percentage_counts_total(df1, df2, df3,df7, df8, df9,column_name):
     unihasins1 = len(extract_unique_hashtags(df1, column_name))/(len(extract_unique_hashtags(df1, column_name))+len(extract_unique_hashtags(df7, column_name)))
     unihasins2 = len(extract_unique_hashtags(df2, column_name))/(len(extract_unique_hashtags(df2, column_name))+len(extract_unique_hashtags(df8, column_name)))
     unihasins3 = len(extract_unique_hashtags(df3, column_name))/(len(extract_unique_hashtags(df3, column_name))+len(extract_unique_hashtags(df9, column_name)))
-    unihasins4 = len(extract_unique_hashtags(df4, column_name))/(len(extract_unique_hashtags(df4, column_name))+len(extract_unique_hashtags(df10, column_name)))
-    unihasins5 = len(extract_unique_hashtags(df5, column_name))/(len(extract_unique_hashtags(df5, column_name))+len(extract_unique_hashtags(df11, column_name)))
-    unihasins6 = len(extract_unique_hashtags(df6, column_name))/(len(extract_unique_hashtags(df6, column_name))+len(extract_unique_hashtags(df12, column_name)))
 
     unique_counts = {
-        'Platform': ['Facebook', 'Reddit', 'Twitter', 'Instagram', 'TikTok', 'YouTube'],
-        'Unique Counts': [(unihasins1), (unihasins2), (unihasins3), (unihasins4), (unihasins5), (unihasins6)]
+        'Platform': [ 'Instagram', 'TikTok', 'YouTube'],
+        'Unique Counts': [(unihasins1), (unihasins2), (unihasins3)]
     }
 
     df_unique_counts = pd.DataFrame(unique_counts)
