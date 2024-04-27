@@ -219,6 +219,45 @@ def draw_network(dataframe, hashtags_column, title, sample_size=None, k_value=0.
     plt.title(title)
     plt.show()
 
+
+def draw_network_row(dataframe, column, title, k_value=0.2, node_size=200,
+                  edge_color='grey', alpha=0.7, edge_weight=0.1):
+    g = nx.Graph()
+
+    # Iterate over all rows in the dataframe
+    for index, row in dataframe.iterrows():
+        words_list = row[column]
+        # Iterate over each word in the current row
+        for word in words_list:
+            # Find rows with the same word in the 'hashtags' column, excluding the current row
+            similar_rows = dataframe[dataframe[column].apply(lambda x: word in x) & (dataframe.index != index)]
+            # Iterate over similar rows
+            for similar_index, similar_row in similar_rows.iterrows():
+                similar_words_list = similar_row[column]
+                # Count the number of common words between the two rows
+                common_words_count = len(set(words_list) & set(similar_words_list))
+                # Add edge between the current row and similar row with weight equal to the common words count
+                if common_words_count > 0:
+                    g.add_edge(index, similar_index, weight=common_words_count)
+
+    # Calculate the spring layout
+    pos = nx.spring_layout(g, k=k_value)
+
+    # Draw nodes
+    nx.draw_networkx_nodes(g, pos, node_size=node_size, alpha=alpha)
+
+    # Draw edges with their weights
+    nx.draw_networkx_edges(g, pos, width=edge_weight, alpha=alpha, edge_color=edge_color)
+
+    # Set title
+    plt.title(title)
+
+    # Turn off axis
+    plt.axis('off')
+    # Show plot
+    plt.show()
+
+
 def calculate_post_count(df, inf_df, username_col):
     post_count_per_user = df.groupby(username_col).size()
     inf_df["post_count"] = inf_df["username"].map(post_count_per_user)
