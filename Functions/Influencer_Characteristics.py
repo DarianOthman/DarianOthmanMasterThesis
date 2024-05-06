@@ -188,150 +188,19 @@ def plot_time_between_posts(df1, df2, df3, label1, label2, label3, title, lower_
 
     # Show the plot
     plt.show()
-
-
-def draw_network(dataframe, hashtags_column, title, sample_size=None, k_value=0.2, node_size=2,
-                         edge_color='grey', alpha=0.7, edge_weight=0.1):
-    dataframes = dataframe
-
-    # Filter out rows with non-empty lists of hashtags
-    filtered_df = dataframes[dataframes[hashtags_column].apply(lambda x: bool(x))].reset_index(drop=True)
-    if sample_size is None:
-        sample_size = len(filtered_df)
-    sample_size = sample_size
-    random_sample = filtered_df.sample(n=sample_size, random_state=42)
-
-    g = nx.Graph()
-    for words_list in random_sample[hashtags_column]:
-        co_occurrences = Counter(
-            [(word1, word2) for i, word1 in enumerate(words_list) for j, word2 in enumerate(words_list) if i < j])
-        for edge, weight in co_occurrences.items():
-            g.add_edge(edge[0], edge[1], weight=weight)
-
-    # Calculate the spring layout
-    pos = nx.spring_layout(g, k=k_value)
-
-    # Draw the graph with specified layout, considering edge weights
-    edge_weights = [g[u][v]['weight'] for u, v in g.edges()]
-    nx.draw(g, pos, with_labels=False, node_size=node_size, edge_color=edge_color,
-            width=[weight * edge_weight for weight in edge_weights], alpha=alpha)
-
-    plt.title(title)
-    plt.show()
-
-
-def draw_network_row(dataframe, column, title, k_value=0.2, node_size=200,
-                  edge_color='grey', alpha=0.7, edge_weight=0.1):
-    g = nx.Graph()
-
-    # Iterate over all rows in the dataframe
-    for index, row in dataframe.iterrows():
-        words_list = row[column]
-        # Iterate over each word in the current row
-        for word in words_list:
-            # Find rows with the same word in the 'hashtags' column, excluding the current row
-            similar_rows = dataframe[dataframe[column].apply(lambda x: word in x) & (dataframe.index != index)]
-            # Iterate over similar rows
-            for similar_index, similar_row in similar_rows.iterrows():
-                similar_words_list = similar_row[column]
-                # Count the number of common words between the two rows
-                common_words_count = len(set(words_list) & set(similar_words_list))
-                # Add edge between the current row and similar row with weight equal to the common words count
-                if common_words_count > 0:
-                    g.add_edge(index, similar_index, weight=common_words_count)
-
-    # Calculate the spring layout
-    pos = nx.spring_layout(g, k=k_value)
-
-    # Draw nodes
-    nx.draw_networkx_nodes(g, pos, node_size=node_size, alpha=alpha)
-
-    # Draw edges with their weights
-    nx.draw_networkx_edges(g, pos, width=edge_weight, alpha=alpha, edge_color=edge_color)
-
-    # Set title
-    plt.title(title)
-
-    # Turn off axis
-    plt.axis('off')
-    # Show plot
-    plt.show()
-
-
-import networkx as nx
-import matplotlib.pyplot as plt
-
-
-def draw_multiple_columns(dataframe, column1, column2, column3, column4, title,
-                          edge_color1="green", edge_color2="blue", edge_color3="red", edge_color4="orange",
-                          k_value=0.2, node_size=200, alpha=0.7, edge_weight=0.1):
-    g = nx.Graph()
-
-    # Iterate over all rows in the dataframe
-    for index, row in dataframe.iterrows():
-        words_list1 = row[column1]
-        words_list2 = row[column2]
-        words_list3 = row[column3]
-        words_list4 = row[column4]
-        # Iterate over each word in the current row of column1
-        for word in words_list1:
-            # Find rows with the same word in the column1, excluding the current row
-            similar_rows = dataframe[dataframe[column1].apply(lambda x: word in x) & (dataframe.index != index)]
-            # Iterate over similar rows
-            for similar_index, similar_row in similar_rows.iterrows():
-                similar_words_list = similar_row[column1]
-                # Count the number of common words between the two rows
-                common_words_count = len(set(words_list1) & set(similar_words_list))
-                # Add edge between the current row and similar row with weight equal to the common words count
-                if common_words_count > 0:
-                    g.add_edge(index, similar_index, weight=common_words_count, color=edge_color1)
-
-        # Repeat the same process for column2
-        for word in words_list2:
-            similar_rows = dataframe[dataframe[column2].apply(lambda x: word in x) & (dataframe.index != index)]
-            for similar_index, similar_row in similar_rows.iterrows():
-                similar_words_list = similar_row[column2]
-                common_words_count = len(set(words_list2) & set(similar_words_list))
-                if common_words_count > 0:
-                    g.add_edge(index, similar_index, weight=common_words_count, color=edge_color2)
-
-        # Repeat the same process for column3
-        for word in words_list3:
-            similar_rows = dataframe[dataframe[column3].apply(lambda x: word in x) & (dataframe.index != index)]
-            for similar_index, similar_row in similar_rows.iterrows():
-                similar_words_list = similar_row[column3]
-                common_words_count = len(set(words_list3) & set(similar_words_list))
-                if common_words_count > 0:
-                    g.add_edge(index, similar_index, weight=common_words_count, color=edge_color3)
-
-        # Repeat the same process for column4
-        for word in words_list4:
-            similar_rows = dataframe[dataframe[column4].apply(lambda x: word in x) & (dataframe.index != index)]
-            for similar_index, similar_row in similar_rows.iterrows():
-                similar_words_list = similar_row[column4]
-                common_words_count = len(set(words_list4) & set(similar_words_list))
-                if common_words_count > 0:
-                    g.add_edge(index, similar_index, weight=common_words_count, color=edge_color4)
-
-    edge_colors = [g[u][v]['color'] for u, v in g.edges()]
-
-    # Calculate the spring layout
-    pos = nx.spring_layout(g, k=k_value)
-
-    # Draw nodes
-    nx.draw_networkx_nodes(g, pos, node_size=node_size, alpha=alpha)
-
-    # Draw edges with their weights
-    nx.draw_networkx_edges(g, pos, width=edge_weight, alpha=alpha, edge_color=edge_colors)
-
-    # Set title
-    plt.title(title)
-
-    # Turn off axis
-    plt.axis('off')
-    # Show plot
-    plt.show()
-
+def draw_network(dataframe, column, filename):
+    for i in range(len(dataframe)):
+        dataframe[column].iloc[i] = set(dataframe[column].iloc[i])
+    G = nx.Graph()
+    for i in range(len(dataframe)):
+        for j in range(i + 1, len(dataframe)):  # Avoid duplicate pairs and self-loops
+            # Compute the intersection set
+            intersection_set = dataframe[column].iloc[i].intersection(dataframe[column].iloc[j])
+            # Check if intersection set is non-empty
+            if intersection_set:
+                # Add edge between i and j with weight equal to the size of intersection set
+                G.add_edge(i, j, weight=len(intersection_set))
+    nx.write_graphml(G, filename)
 
 def calculate_post_count(df, inf_df, username_col):
     post_count_per_user = df.groupby(username_col).size()
