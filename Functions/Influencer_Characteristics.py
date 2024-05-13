@@ -188,6 +188,8 @@ def plot_time_between_posts(df1, df2, df3, label1, label2, label3, title, lower_
 
     # Show the plot
     plt.show()
+
+
 def draw_network(dataframe, column, filename):
     for i in range(len(dataframe)):
         dataframe[column].iloc[i] = set(dataframe[column].iloc[i])
@@ -201,6 +203,7 @@ def draw_network(dataframe, column, filename):
                 # Add edge between i and j with weight equal to the size of intersection set
                 G.add_edge(i, j, weight=len(intersection_set))
     nx.write_graphml(G, filename)
+
 
 def calculate_post_count(df, inf_df, username_col):
     post_count_per_user = df.groupby(username_col).size()
@@ -282,7 +285,7 @@ def split_columns(df, columns):
     return df
 
 
-def plot_unique(df1ai, df2ai, df3ai, df1real, df2real, df3real,column_name):
+def plot_unique(df1ai, df2ai, df3ai, df1real, df2real, df3real, column_name):
     # Extracting data
     unihasins_en_ai = len(extract_unique_hashtags(df1ai, column_name))
     unihasins_nl_ai = len(extract_unique_hashtags(df2ai, column_name))
@@ -323,11 +326,13 @@ def get_unique_counts(df1, df2, df3, column_name):
     df_unique_counts = pd.DataFrame(unique_counts)
     return df_unique_counts
 
+
 def calculate_avg_per_post(df, hashtag_col):
     avg_hashtag_per_post = df[hashtag_col].apply(len).sum() / len(df)
     return avg_hashtag_per_post
 
-def get_avg_counts(df1, df2, df3,column_name):
+
+def get_avg_counts(df1, df2, df3, column_name):
     unihasins1 = calculate_avg_per_post(df1, column_name)
     unihasins2 = calculate_avg_per_post(df2, column_name)
     unihasins3 = calculate_avg_per_post(df3, column_name)
@@ -340,11 +345,11 @@ def get_avg_counts(df1, df2, df3,column_name):
     df_unique_counts = pd.DataFrame(unique_counts)
     return df_unique_counts
 
-def get_percentage_counts(df1, df2, df3, column_name):
-    unihasins1 = df1[column_name].apply(len).sum() / len(df1)/len(extract_unique_hashtags(df1, column_name))
-    unihasins2 = df2[column_name].apply(len).sum() / len(df2)/len(extract_unique_hashtags(df2, column_name))
-    unihasins3 = df3[column_name].apply(len).sum() / len(df3)/len(extract_unique_hashtags(df3, column_name))
 
+def get_percentage_counts(df1, df2, df3, column_name):
+    unihasins1 = df1[column_name].apply(len).sum() / len(df1) / len(extract_unique_hashtags(df1, column_name))
+    unihasins2 = df2[column_name].apply(len).sum() / len(df2) / len(extract_unique_hashtags(df2, column_name))
+    unihasins3 = df3[column_name].apply(len).sum() / len(df3) / len(extract_unique_hashtags(df3, column_name))
 
     unique_counts = {
         'Platform': ['Instagram', 'TikTok', 'YouTube'],
@@ -355,13 +360,16 @@ def get_percentage_counts(df1, df2, df3, column_name):
     return df_unique_counts
 
 
-def get_percentage_counts_total(df1, df2, df3,df7, df8, df9,column_name):
-    unihasins1 = len(extract_unique_hashtags(df1, column_name))/(len(extract_unique_hashtags(df1, column_name))+len(extract_unique_hashtags(df7, column_name)))
-    unihasins2 = len(extract_unique_hashtags(df2, column_name))/(len(extract_unique_hashtags(df2, column_name))+len(extract_unique_hashtags(df8, column_name)))
-    unihasins3 = len(extract_unique_hashtags(df3, column_name))/(len(extract_unique_hashtags(df3, column_name))+len(extract_unique_hashtags(df9, column_name)))
+def get_percentage_counts_total(df1, df2, df3, df7, df8, df9, column_name):
+    unihasins1 = len(extract_unique_hashtags(df1, column_name)) / (
+                len(extract_unique_hashtags(df1, column_name)) + len(extract_unique_hashtags(df7, column_name)))
+    unihasins2 = len(extract_unique_hashtags(df2, column_name)) / (
+                len(extract_unique_hashtags(df2, column_name)) + len(extract_unique_hashtags(df8, column_name)))
+    unihasins3 = len(extract_unique_hashtags(df3, column_name)) / (
+                len(extract_unique_hashtags(df3, column_name)) + len(extract_unique_hashtags(df9, column_name)))
 
     unique_counts = {
-        'Platform': [ 'Instagram', 'TikTok', 'YouTube'],
+        'Platform': ['Instagram', 'TikTok', 'YouTube'],
         'Unique Counts': [(unihasins1), (unihasins2), (unihasins3)]
     }
 
@@ -389,3 +397,103 @@ def extract_unique_hashtags_ratio(dataframe, column_name):
     average_ratio = sum(ratio_list) / len(ratio_list)
 
     return average_ratio
+
+
+def check_for_ad(caption):
+    adlist = ['promo',
+              'partner',
+              '#ad',
+              'gift',
+              '#partner',
+              'sponsor',
+              'merch',
+              'gifted',
+              ' #ad',
+              '#sponsored',
+              '#partnership',
+              '#collab',
+              '#merch',
+              '#spon',
+              '#advertisement',
+              '#gifted',
+              ' partner',
+              ' gift',
+              ' #partner',
+              'ambassador',
+              'advertising',
+              'advertisement',
+              ' #merch',
+              '#sponsor',
+              ' #collab',
+              'promotion',
+              ' #sponsor',
+              'advert',
+              ' merch',
+              ' #spon',
+              'spon',
+              ' #sponsored',
+              ' sponsor',
+              ' #ambassador',
+              ' promo',
+              ' gifted',
+              ' promotion',
+              ' advertising']
+    for keyword in adlist:
+        if keyword in caption:
+            return 1
+    return 0
+
+def check_for_ad_dutch(caption):
+    adlist = ['#ad',
+     '#partner',
+     'partner',
+     '#spon',
+     '#merch',
+     'merch',
+     ' #merch',
+     ' #spon',
+     ' #partner',
+     ' gift',
+     'gift',
+     ' #ad',
+     'reclame',
+     '#collab',
+     'advertentie',
+     '#promotion',
+     'promo',
+     ' #gifted',
+     '#ambassador',
+     'gifted',
+     'spon',
+     ' #reclame',
+     '#gifted',
+     '#sponsor',
+     'sponsor',
+     '#advertentie',
+     '#partnership',
+     ' advertentie',
+     ' partner',
+     '#reclame',
+     'ambassador',
+     ' promo',
+     ' sponsor',
+     'promotion',
+     'advertorial',
+     ' reclame',
+     ' merch']
+    for keyword in adlist:
+        if keyword in caption:
+            return 1
+    return 0
+
+def ad_column(df, column):
+    df["ad"]=0
+    for i in range(len(df)):
+        df["ad"].iloc[i]=check_for_ad(df[column].iloc[i])
+    return df
+
+def ad_column_dutch(df, column):
+    df["ad"]=0
+    for i in range(len(df)):
+        df["ad"].iloc[i]=check_for_ad_dutch(df[column].iloc[i])
+    return df
