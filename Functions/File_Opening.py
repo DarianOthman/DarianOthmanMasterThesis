@@ -22,7 +22,7 @@ def read_data(file_path):
 def read_data_ai(file_path):
     # Read in Instagram data
     with open(file_path, 'r', encoding='utf-8') as f:
-        reader = csv.reader(f, delimiter=',')
+        reader = csv.reader(f, delimiter=';')
         rows = list(reader)
         df = pd.DataFrame(rows)
 
