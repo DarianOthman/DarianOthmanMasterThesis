@@ -200,9 +200,10 @@ def draw_network(dataframe, column, filename):
             intersection_set = dataframe[column].iloc[i].intersection(dataframe[column].iloc[j])
             # Check if intersection set is non-empty
             if intersection_set:
-                # Add edge between i and j with weight equal to the size of intersection set
-                G.add_edge(i, j, weight=len(intersection_set))
+                for k in range(len(list(intersection_set))):
+                    G.add_edge(i, j, label=list(intersection_set)[k])
     nx.write_graphml(G, filename)
+    return G
 
 
 def calculate_post_count(df, inf_df, username_col):
