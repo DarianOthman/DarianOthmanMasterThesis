@@ -484,13 +484,14 @@ def check_for_ad_dutch(caption):
      ' merch']
     for keyword in adlist:
         if keyword in caption:
-            return 1
-    return 0
+            return 1, keyword
+    return 0, "None"
 
 def ad_column(df, column):
     df["ad"]=0
     for i in range(len(df)):
-        df["ad"].iloc[i]=check_for_ad(df[column].iloc[i])
+        df["ad"].iloc[i]=check_for_ad(df[column].iloc[i])[0]
+        df["keyword"].iloc[i] = check_for_ad(df[column].iloc[i])[1]
     return df
 
 def ad_column_dutch(df, column):
