@@ -401,101 +401,47 @@ def extract_unique_hashtags_ratio(dataframe, column_name):
 
 
 def check_for_ad(caption):
-    adlist = ['promo',
-              'partner',
-              '#ad',
-              'gift',
-              '#partner',
-              'sponsor',
-              'merch',
-              'gifted',
-              ' #ad',
-              '#sponsored',
-              '#partnership',
-              '#collab',
-              '#merch',
-              '#spon',
-              '#advertisement',
-              '#gifted',
-              ' partner',
-              ' gift',
-              ' #partner',
-              'ambassador',
-              'advertising',
-              'advertisement',
-              ' #merch',
-              '#sponsor',
-              ' #collab',
-              'promotion',
-              ' #sponsor',
-              'advert',
-              ' merch',
-              ' #spon',
-              'spon',
-              ' #sponsored',
-              ' sponsor',
-              ' #ambassador',
-              ' promo',
-              ' gifted',
-              ' promotion',
-              ' advertising']
-    for keyword in adlist:
-        if keyword in caption:
-            return 1
-    return 0
+    detection = []
+    adlist = ['promo', 'partner', '#ad', 'gift', '#partner', 'sponsor', 'merch', 'gifted', '#sponsored',
+              '#partnership', '#collab', '#merch', '#spon', '#advertisement', '#gifted', 'ambassador',
+              'advertising', 'advertisement', '#sponsor', 'promotion', 'advert', 'spon']
 
-def check_for_ad_dutch(caption):
-    adlist = ['#ad',
-     '#partner',
-     'partner',
-     '#spon',
-     '#merch',
-     'merch',
-     ' #merch',
-     ' #spon',
-     ' #partner',
-     ' gift',
-     'gift',
-     ' #ad',
-     'reclame',
-     '#collab',
-     'advertentie',
-     '#promotion',
-     'promo',
-     ' #gifted',
-     '#ambassador',
-     'gifted',
-     'spon',
-     ' #reclame',
-     '#gifted',
-     '#sponsor',
-     'sponsor',
-     '#advertentie',
-     '#partnership',
-     ' advertentie',
-     ' partner',
-     '#reclame',
-     'ambassador',
-     ' promo',
-     ' sponsor',
-     'promotion',
-     'advertorial',
-     ' reclame',
-     ' merch']
     for keyword in adlist:
         if keyword in caption:
-            return 1, keyword
-    return 0, "None"
+            detection.append(keyword)
+
+    if detection:
+        return 1, detection
+    else:
+        return 0, detection
+
 
 def ad_column(df, column):
-    df["ad"]=0
-    for i in range(len(df)):
-        df["ad"].iloc[i]=check_for_ad(df[column].iloc[i])[0]
-        df["keyword"].iloc[i] = check_for_ad(df[column].iloc[i])[1]
+    ads_detected = df[column].apply(check_for_ad)
+    df["ad"] = ads_detected.apply(lambda x: x[0])
+    df["keyword"] = ads_detected.apply(lambda x: ','.join(x[1]) if x[1] else "None")
     return df
 
+
+def check_for_ad_dutch(caption):
+    detection = []
+    adlist = ['#ad', '#partner', 'partner', '#spon', '#merch', 'merch', 'gift', 'reclame', '#collab',
+              'advertentie', '#promotion', 'promo', '#gifted', '#ambassador', 'gifted', 'spon',
+              '#reclame', '#sponsor', 'sponsor', '#advertentie', '#partnership', 'ambassador',
+              'promotion', 'advertorial']
+
+    for keyword in adlist:
+        if keyword in caption:
+            detection.append(keyword)
+
+    if detection:
+        return 1, detection
+    else:
+        return 0, detection
+
+
 def ad_column_dutch(df, column):
-    df["ad"]=0
-    for i in range(len(df)):
-        df["ad"].iloc[i]=check_for_ad_dutch(df[column].iloc[i])
+    ads_detected = df[column].apply(check_for_ad_dutch)
+    df["ad"] = ads_detected.apply(lambda x: x[0])
+    df["keyword"] = ads_detected.apply(lambda x: ','.join(x[1]) if x[1] else "None")
     return df
