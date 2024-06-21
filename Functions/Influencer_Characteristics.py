@@ -202,6 +202,20 @@ def draw_network(dataframe, column, filename):
             if intersection_set:
                 for k in range(len(list(intersection_set))):
                     G.add_edge(i, j, label=list(intersection_set)[k])
+    # Get the subframe of nodes present in the graph
+    b = dataframe.iloc[list(G.nodes())]
+
+    # Add a column 'caption' to the subframe
+    ad_column(b, "caption")
+
+    # Filter the subframe to get the nodes with 'ad' == 1
+    c = b[b["ad"] == 1]
+
+    # Assign attributes to nodes based on conditions
+    for node in G.nodes():
+        if node in c.index:
+            G.nodes[node]['color'] = '#1F8E3A'
+            G.nodes[node]['size'] = 15
     nx.write_graphml(G, filename)
     return G
 
